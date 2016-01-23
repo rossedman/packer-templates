@@ -1,0 +1,99 @@
+{
+  "variables": {
+    "vm_name": "mybase",
+    "version": "0.0.1",
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+  "provisioners" : [
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "script": "scripts/centos7.sh",
+      "override": {
+        "amazon-ebs": {
+          "execute_command": "echo 'ec2-user' | sudo -S -E bash {{.Path}}"
+        }
+      }
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "ansible/setup.yml",
+      "playbook_dir": "ansible",
+      "staging_directory": "/tmp/provision"
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "script": "scripts/cleanup.sh",
+      "override": {
+        "amazon-ebs": {
+          "execute_command": "echo 'ec2-user' | sudo -S -E bash {{.Path}}"
+        }
+      }
+    }
+  ],
+  "builders" : [
+    {
+      "ami_name" : "{{user `vm_name`}}-centos7-{{timestamp}}",
+      "type" : "amazon-ebs",
+      "ssh_pty" : true,
+      "access_key" : "{{user `aws_access_key`}}",
+      "secret_key" : "{{user `aws_secret_key`}}",
+      "region" : "us-west-2",
+      "source_ami" : "ami-775e4f16",
+      "instance_type" : "t2.micro",
+      "ssh_username" : "ec2-user"
+    },
+    {
+      "vm_name": "{{user `vm_name`}}-centos7-{{timestamp}}",
+      "type": "virtualbox-iso",
+      "boot_wait": "10s",
+      "disk_size": 16384,
+      "guest_os_type": "RedHat_64",
+      "headless": false,
+      "http_directory": "http",
+      "iso_url": "http://centos.mirrors.hoobly.com/7/isos/x86_64/CentOS-7-x86_64-Minimal-1511.iso",
+      "iso_checksum_type": "md5",
+      "iso_checksum": "88c0437f0a14c6e2c94426df9d43cd67",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "20m",
+      "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "virtualbox_version_file": ".vbox_version",
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/vagrant.cfg<enter><wait>"
+      ]
+    },
+    {
+      "vm_name": "{{user `vm_name`}}-centos7-{{timestamp}}",
+      "type": "vmware-iso",
+      "boot_wait": "10s",
+      "disk_size": 16384,
+      "guest_os_type": "centos-64",
+      "headless": false,
+      "http_directory": "http",
+      "iso_url": "http://centos.mirrors.hoobly.com/7/isos/x86_64/CentOS-7-x86_64-Minimal-1511.iso",
+      "iso_checksum_type": "md5",
+      "iso_checksum": "88c0437f0a14c6e2c94426df9d43cd67",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "20m",
+      "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
+      "tools_upload_flavor": "linux",
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/vagrant.cfg<enter><wait>"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "builds/{{.Provider}}-{{user `version`}}.box",
+      "only": ["vmware-iso", "virtualbox-iso"]
+    }
+  ]
+}

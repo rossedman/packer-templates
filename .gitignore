@@ -1,0 +1,5 @@
+builds/*
+packer_cache
+*.tfstate
+*.tfstate.backup
+!builds/.gitkeep

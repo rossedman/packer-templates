@@ -1,0 +1,56 @@
+---
+- hosts: all
+  sudo: yes
+  gather_facts: yes
+  tasks:
+    - name: update all packages
+      yum: name=* state=latest
+
+    - name: install nfs tools
+      yum: name={{item}} state=latest
+      with_items:
+        - firewalld
+        - bind-utils
+        - lsscsi
+        - sysfsutils
+        - net-tools
+        - nfs-utils
+        - libnfsidmap
+        - libselinux-python
+
+    - name: start NFS services
+      service:
+        name: "{{item}}"
+        state: restarted
+        enabled: yes
+      with_items:
+        - rpcbind
+        - nfs-server
+        - rpc-statd
+        - nfs-idmapd
+        - firewalld
+
+    - user: 
+        name: redman 
+        comment: "Ross Edman"
+        shell: /bin/bash 
+
+    - user: name=redman groups=wheel append=yes
+
+    - name: setup ~/.ssh directory
+      file:
+        dest: /home/redman/.ssh/
+        state: directory
+
+    - name: authorize ssh key for login
+      authorized_key:
+        user: redman
+        key: "{{ lookup('file', '/tmp/provision/files/id_rsa.pub') }}"
+
+    - name: change visudo file for passwordless logins
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: ^%wheel ALL\=
+        line: "%wheel ALL=(ALL) NOPASSWD:ALL"
+        validate: visudo -cf %s
