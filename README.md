@@ -5,6 +5,12 @@ export AWS_ACCESS_KEY="PutYourAccessKeyHere"
 export AWS_SECRET_KEY="PutYourSecretKeyHere"
 ```
 
+# Install OVF Plugin
+
+```
+git@github.com:frapposelli/packer-post-processor-vagrant-vmware-ovf.git
+```
+
 # Add Ansible Scripts
 Configure your ansible variables before your box build
 
