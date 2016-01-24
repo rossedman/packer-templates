@@ -4,3 +4,4 @@ packer_cache
 *.tfstate.backup
 !builds/.gitkeep
 .vagrant
+Vagrantfile
