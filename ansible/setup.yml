@@ -6,32 +6,30 @@
     - geerlingguy.packer-rhel
     - geerlingguy.nfs
   tasks:
-    # - name: update all packages
-    #   yum: name=* state=latest
+    - name: update all packages
+      yum: name=* state=latest
 
-    # - name: install nfs tools
-    #   yum: name={{item}} state=latest
-    #   with_items:
-    #     - firewalld
-    #     - bind-utils
-    #     - lsscsi
-    #     - sysfsutils
-    #     - net-tools
-    #     - nfs-utils
-    #     - libnfsidmap
-    #     - libselinux-python
+    - name: install nfs tools
+      yum: name={{item}} state=latest
+      with_items:
+        - bind-utils
+        - lsscsi
+        - sysfsutils
+        - net-tools
+        - nfs-utils
+        - libnfsidmap
+        - libselinux-python
 
-    # - name: start NFS services
-    #   service:
-    #     name: "{{item}}"
-    #     state: restarted
-    #     enabled: yes
-    #   with_items:
-    #     - rpcbind
-    #     - nfs-server
-    #     - rpc-statd
-    #     - nfs-idmapd
-    #     - firewalld
+    - name: start NFS services
+      service:
+        name: "{{item}}"
+        state: restarted
+        enabled: yes
+      with_items:
+        - rpcbind
+        - nfs-server
+        - rpc-statd
+        - nfs-idmapd
     
     - name: install zsh requirements
       yum: name={{item}} state=latest
@@ -45,11 +43,20 @@
     - user: name=redman groups=wheel append=yes
     - user: name=vagrant shell=/bin/zsh
 
-    - git: repo=git://github.com/robbyrussell/oh-my-zsh.git dest=/home/vagrant/.oh-my-zsh accept_hostkey=True
-    - git: repo=git://github.com/robbyrussell/oh-my-zsh.git dest=/home/redman/.oh-my-zsh accept_hostkey=True
+    - name: clone oh-my-zsh
+      git: 
+        repo: git://github.com/robbyrussell/oh-my-zsh.git 
+        dest: "/home/{{item}}/.oh-my-zsh" 
+        accept_hostkey: True
+      with_items:
+        - vagrant
+        - redman
 
-    - command: cp /home/redman/.oh-my-zsh/templates/zshrc.zsh-template /home/redman/.zshrc creates=/home/redman/.zshrc
-    - command: cp /home/vagrant/.oh-my-zsh/templates/zshrc.zsh-template /home/vagrant/.zshrc creates=/home/vagrant/.zshrc
+    - name: install .zshrc file
+      command: "cp /home/{{item}}/.oh-my-zsh/templates/zshrc.zsh-template /home/{{item}}/.zshrc creates=/home/{{item}}/.zshrc"
+      with_items:
+        - vagrant
+        - redman
 
     - name: setup ~/.ssh directory
       file:
@@ -72,7 +79,8 @@
     - name: install dynmotd
       command: cp /tmp/provision/files/dynmotd /usr/local/bin/dynmotd creates=/usr/local/bin/dynmotd
 
-    - command: chmod 755 /usr/local/bin/dynmotd
+    - name: set permissions on dynmotd
+      command: chmod 755 /usr/local/bin/dynmotd
 
     - lineinfile:
         dest: /etc/ssh/sshd_config

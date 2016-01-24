@@ -1,9 +1,7 @@
 {
   "variables": {
-    "vm_name": "base",
-    "version": "0.0.1",
-    "aws_access_key": "",
-    "aws_secret_key": ""
+    "vm_name": "redman-base",
+    "version": "0.0.1"
   },
   "provisioners" : [
     {
@@ -12,12 +10,7 @@
       "inline": [
         "rpm -ivh http://mirror.pnl.gov/epel/7/x86_64/e/epel-release-7-5.noarch.rpm",
         "yum install -y python-setuptools python-simplejson ansible"
-      ],
-      "override": {
-        "amazon-ebs": {
-          "execute_command": "echo 'ec2-user' | sudo -S -E bash {{.Path}}"
-        }
-      }
+      ]
     },
     {
       "type": "ansible-local",
@@ -35,31 +28,15 @@
       "inline": [
         "dd if=/dev/zero of=/EMPTY bs=1M",
         "rm -f /EMPTY"
-      ],
-      "override": {
-        "amazon-ebs": {
-          "execute_command": "echo 'ec2-user' | sudo -S -E bash {{.Path}}"
-        }
-      }
+      ]
     }
   ],
   "builders" : [
     {
-      "ami_name" : "{{user `vm_name`}}-centos7-{{timestamp}}",
-      "type" : "amazon-ebs",
-      "ssh_pty" : true,
-      "access_key" : "{{user `aws_access_key`}}",
-      "secret_key" : "{{user `aws_secret_key`}}",
-      "region" : "us-west-2",
-      "source_ami" : "ami-775e4f16",
-      "instance_type" : "t2.micro",
-      "ssh_username" : "ec2-user"
-    },
-    {
       "vm_name": "{{user `vm_name`}}-centos7-{{timestamp}}",
       "type": "virtualbox-iso",
       "boot_wait": "10s",
-      "disk_size": 16384,
+      "disk_size": 8000,
       "guest_os_type": "RedHat_64",
       "headless": true,
       "http_directory": "http",
@@ -81,7 +58,7 @@
       "vm_name": "{{user `vm_name`}}-centos7-{{timestamp}}",
       "type": "vmware-iso",
       "boot_wait": "10s",
-      "disk_size": 16384,
+      "disk_size": 8000,
       "guest_os_type": "centos-64",
       "headless": true,
       "http_directory": "http",
@@ -103,7 +80,6 @@
     {
       "type": "vagrant",
       "output": "builds/{{user `vm_name`}}-{{.Provider}}-{{user `version`}}.box",
-      "only": ["vmware-iso", "virtualbox-iso"],
       "compression_level": 9
     }
   ]
