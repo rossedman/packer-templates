@@ -7,8 +7,8 @@
     "name": "rossedman/base",
     "vcs": true,
     "include": [
-      "./ansible/roles/geerlingguy.nfs",
-      "./ansible/roles/geerlingguy.packer-rhel"
+      "ansible/roles/geerlingguy.nfs",
+      "ansible/roles/geerlingguy.packer-rhel"
     ]
   },
   "provisioners" : [
