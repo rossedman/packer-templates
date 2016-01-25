@@ -5,7 +5,11 @@
   },
   "push": {
     "name": "rossedman/base",
-    "vcs": true
+    "vcs": true,
+    "include": [
+      "./ansible/roles/geerlingguy.nfs",
+      "./ansible/roles/geerlingguy.packer-rhel"
+    ]
   },
   "provisioners" : [
     {
