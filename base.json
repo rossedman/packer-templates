@@ -119,7 +119,7 @@
       "artifact_type": "vagrant.box",
       "metadata": {
         "created_at": "{{timestamp}}",
-        "provider": "vmware_fusion"
+        "provider": "vmware_desktop"
       },
       "only": ["vmware-iso"]
     }
