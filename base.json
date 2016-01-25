@@ -1,7 +1,11 @@
 {
   "variables": {
-    "vm_name": "redman-base",
+    "vm_name": "rossedman-base",
     "version": "0.0.1"
+  },
+  "push": {
+    "name": "rossedman/base",
+    "vcs": true
   },
   "provisioners" : [
     {
@@ -16,11 +20,7 @@
       "type": "ansible-local",
       "playbook_file": "ansible/setup.yml",
       "playbook_dir": "ansible",
-      "staging_directory": "/tmp/provision",
-      "role_paths": [
-        "/etc/ansible/roles/geerlingguy.packer-rhel",
-        "/etc/ansible/roles/geerlingguy.nfs"
-      ]
+      "staging_directory": "/tmp/provision"
     },
     {
       "type": "shell",
@@ -52,6 +52,20 @@
       "virtualbox_version_file": ".vbox_version",
       "boot_command": [
         "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/vagrant.cfg<enter><wait>"
+      ],
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "512"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
       ]
     },
     {
@@ -73,7 +87,12 @@
       "tools_upload_flavor": "linux",
       "boot_command": [
         "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/vagrant.cfg<enter><wait>"
-      ]
+      ],
+      "vmx_data": {
+        "cpuid.coresPerSocket": "1",
+        "memsize": "512",
+        "numvcpus": "2"
+      }
     }
   ],
   "post-processors": [
@@ -81,6 +100,28 @@
       "type": "vagrant",
       "output": "builds/{{user `vm_name`}}-{{.Provider}}-{{user `version`}}.box",
       "compression_level": 9
+    },
+    {
+      "type": "atlas",
+      "token": "{{user `atlas_token`}}",
+      "artifact": "rossedman/base",
+      "artifact_type": "vagrant.box",
+      "metadata": {
+        "created_at": "{{timestamp}}",
+        "provider": "virtualbox"
+      },
+      "only": ["virtualbox-iso"]
+    },
+    {
+      "type": "atlas",
+      "token": "{{user `atlas_token`}}",
+      "artifact": "rossedman/base",
+      "artifact_type": "vagrant.box",
+      "metadata": {
+        "created_at": "{{timestamp}}",
+        "provider": "vmware_fusion"
+      },
+      "only": ["vmware-iso"]
     }
   ]
 }

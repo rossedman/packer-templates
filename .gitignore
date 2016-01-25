@@ -5,3 +5,4 @@ packer_cache
 !builds/.gitkeep
 .vagrant
 Vagrantfile
+ansible/roles/*
