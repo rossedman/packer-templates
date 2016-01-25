@@ -5,3 +5,5 @@ packer_cache
 !builds/.gitkeep
 .vagrant
 Vagrantfile
+output-virtualbox-iso
+output-vmware-iso

@@ -4,8 +4,14 @@
 $ ansible-galaxy -r ansible/requirements.txt -f install
 ```
 
+# Load ATLAS_TOKEN
+
+```
+$ source ~/.dotfiles/zsh/tokens.sh
+```
+
 # Push To Packer
 
 ```
-$ packer push base.json
+$ packer push -var 'box_version=0.1.0' base.json
 ```

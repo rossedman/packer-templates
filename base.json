@@ -1,11 +1,7 @@
 {
   "variables": {
     "vm_name": "rossedman-base",
-    "version": "0.0.1"
-  },
-  "push": {
-    "name": "rossedman/base",
-    "vcs": true
+    "box_version": "0.1.0"
   },
   "provisioners" : [
     {
@@ -26,6 +22,7 @@
       "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
       "inline": [
+        "rm -rf /tmp/*",
         "dd if=/dev/zero of=/EMPTY bs=1M",
         "rm -f /EMPTY"
       ]
@@ -54,18 +51,8 @@
         "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/vagrant.cfg<enter><wait>"
       ],
       "vboxmanage": [
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--memory",
-          "512"
-        ],
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--cpus",
-          "2"
-        ]
+        ["modifyvm", "{{.Name}}", "--memory", "512"],
+        ["modifyvm", "{{.Name}}", "--cpus", "2"]
       ]
     },
     {
@@ -98,7 +85,8 @@
   "post-processors": [
     {
       "type": "vagrant",
-      "output": "builds/{{user `vm_name`}}-{{.Provider}}-{{user `version`}}.box",
+      "output": "builds/{{user `vm_name`}}-{{.Provider}}-{{user `box_version`}}.box",
+      "keep_input_artifact": true,
       "compression_level": 9
     },
     {
@@ -108,7 +96,8 @@
       "artifact_type": "vagrant.box",
       "metadata": {
         "created_at": "{{timestamp}}",
-        "provider": "virtualbox"
+        "provider": "virtualbox",
+        "version": "{{user `box_version`}}"
       },
       "only": ["virtualbox-iso"]
     },
@@ -119,7 +108,8 @@
       "artifact_type": "vagrant.box",
       "metadata": {
         "created_at": "{{timestamp}}",
-        "provider": "vmware_desktop"
+        "provider": "vmware_fusion",
+        "version": "{{user `box_version`}}"
       },
       "only": ["vmware-iso"]
     }
