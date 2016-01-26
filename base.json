@@ -1,7 +1,7 @@
 {
   "variables": {
     "vm_name": "rossedman-base",
-    "box_version": "0.1.0"
+    "box_version": "0.1.1"
   },
   "provisioners" : [
     {
@@ -86,32 +86,7 @@
     {
       "type": "vagrant",
       "output": "builds/{{user `vm_name`}}-{{.Provider}}-{{user `box_version`}}.box",
-      "keep_input_artifact": true,
       "compression_level": 9
-    },
-    {
-      "type": "atlas",
-      "token": "{{user `atlas_token`}}",
-      "artifact": "rossedman/base",
-      "artifact_type": "vagrant.box",
-      "metadata": {
-        "created_at": "{{timestamp}}",
-        "provider": "virtualbox",
-        "version": "{{user `box_version`}}"
-      },
-      "only": ["virtualbox-iso"]
-    },
-    {
-      "type": "atlas",
-      "token": "{{user `atlas_token`}}",
-      "artifact": "rossedman/base",
-      "artifact_type": "vagrant.box",
-      "metadata": {
-        "created_at": "{{timestamp}}",
-        "provider": "vmware_fusion",
-        "version": "{{user `box_version`}}"
-      },
-      "only": ["vmware-iso"]
     }
   ]
 }
