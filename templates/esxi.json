@@ -1,0 +1,56 @@
+{
+  "variables": {
+    "version": ""
+  },
+  "builders": [
+    {
+      "name": "esxi60-{{timestamp}}",
+      "vm_name": "esxi60-{{timestamp}}",
+      "vmdk_name": "esxi60-disk0",
+      "type": "vmware-iso",
+      "headless": false,
+      "disk_size": 4096,
+      "guest_os_type": "vmkernel5",
+      "iso_url": "/Users/redata425/Documents/ISOs/VMware-VMvisor-Installer-201601001-3380124.x86_64.iso",
+      "iso_checksum": "10e8f6efe634a330c3099a93e1cb1ef1d18e17b5",
+      "iso_checksum_type": "sha1",
+      "ssh_username": "root",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "60m",
+      "shutdown_command": "esxcli system maintenanceMode set -e true -t 0 ; esxcli system shutdown poweroff -d 10 -r 'Packer Shutdown' ; esxcli system maintenanceMode set -e false -t 0",
+      "http_directory": ".",
+      "boot_wait": "5s",
+      "vmx_data": {
+        "memsize": "2048",
+        "numvcpus": "2",
+        "vhv.enable": "TRUE",
+        "ethernet0.present": "TRUE",
+        "ethernet0.startConnected": "TRUE",
+        "ethernet0.virtualDev": "e1000",
+        "ethernet0.addressType": "generated",
+        "ethernet0.generatedAddressOffset": "0",
+        "ethernet0.wakeOnPcktRcv": "FALSE"
+      },
+      "boot_command": [
+        "<enter><wait>O<wait> ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/scripts/esxi6.cfg<enter>"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "scripts/esxi-nested-vm.sh"
+    },
+    {
+      "type": "shell",
+      "script": "scripts/esxi-cloning-config.sh"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "builds/{{.BuildName}}-{{.Provider}}-{{user `version`}}.box",
+      "compression_level": 9
+    }
+  ]
+}
