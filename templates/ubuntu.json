@@ -1,0 +1,57 @@
+{
+  "variables": {
+    "version": ""
+  },
+  "builders" : [
+    {
+      "type": "vmware-iso",
+      "boot_command": [
+        "<esc><wait>",
+        "<esc><wait>",
+        "<enter><wait>",
+        "/install/vmlinuz",
+        " auto=true",
+        " priority=critical",
+        " initrd=/install/initrd.gz",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu15.cfg",
+        " -- ",
+        "<enter>"
+      ],
+      "boot_wait": "30s",
+      "disk_size": 8000,
+      "guest_os_type": "ubuntu-64",
+      "headless": false,
+      "http_directory": "http",
+      "iso_url": "http://releases.ubuntu.com/15.04/ubuntu-15.04-server-amd64.iso",
+      "iso_checksum_type": "md5",
+      "iso_checksum": "487f4a81f22f8597503db3d51a1b502e",
+      "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_username": "vagrant",
+      "ssh_wait_timeout": "10000s",
+      "tools_upload_flavor": "linux",
+      "vm_name": "packer-ubuntu-15.04-amd64",
+      "vmx_data": {
+        "cpuid.coresPerSocket": "1",
+        "memsize": "512",
+        "numvcpus": "2"
+      }
+    }
+  ],
+  "provisioners" : [
+    {
+      "type": "ansible-local",
+      "playbook_file": "ansible/ubuntu.yml",
+      "playbook_dir": "ansible",
+      "staging_directory": "/tmp/provision"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "builds/{{.BuildName}}-{{.Provider}}-{{user `version`}}.box",
+      "compression_level": 9
+    }
+  ]
+}

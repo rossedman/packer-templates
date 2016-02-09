@@ -21,29 +21,28 @@
       "http_directory": ".",
       "boot_wait": "5s",
       "vmx_data": {
-        "memsize": "2048",
+        "memsize": "4096",
         "numvcpus": "2",
-        "vhv.enable": "TRUE",
-        "ethernet0.present": "TRUE",
-        "ethernet0.startConnected": "TRUE",
-        "ethernet0.virtualDev": "e1000",
-        "ethernet0.addressType": "generated",
-        "ethernet0.generatedAddressOffset": "0",
-        "ethernet0.wakeOnPcktRcv": "FALSE"
+        "vhv.enable": "TRUE"
       },
       "boot_command": [
-        "<enter><wait>O<wait> ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/scripts/esxi6.cfg<enter>"
+        "<enter><wait>O<wait> ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/http/esxi6.cfg<enter>"
       ]
     }
   ],
   "provisioners": [
     {
-      "type": "shell",
-      "script": "scripts/esxi-nested-vm.sh"
+      "type": "file",
+      "source": "files/vagrant.pub",
+      "destination": "/etc/ssh/keys-root/authorized_keys"
     },
     {
       "type": "shell",
-      "script": "scripts/esxi-cloning-config.sh"
+      "script": "http/esxi-nested-vm.sh"
+    },
+    {
+      "type": "shell",
+      "script": "http/esxi-cloning-config.sh"
     }
   ],
   "post-processors": [

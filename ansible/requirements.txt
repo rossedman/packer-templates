@@ -1,2 +1,3 @@
 geerlingguy.packer-rhel
+geerlingguy.packer-debian
 geerlingguy.nfs
