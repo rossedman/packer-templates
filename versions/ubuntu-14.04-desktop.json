@@ -1,0 +1,12 @@
+{
+  "_comment": "Build with `packer build -var-file=versions/ubuntu-14.04-desktop.json ubuntu.json`",
+  "vm_name": "ubuntu-14.04.3-desktop",
+  "cpus": "1",
+  "disk_size": "16384",
+  "iso_checksum": "a3de42e9b563f3ccf100fa84f4f7c831e659320f",
+  "iso_checksum_type": "sha1",
+  "iso_name": "ubuntu-14.04-desktop-amd64.iso",
+  "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04.3-desktop-amd64.iso",
+  "memory": "1024",
+  "preseed" : "ubuntu.cfg"
+}

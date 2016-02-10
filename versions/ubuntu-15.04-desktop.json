@@ -1,0 +1,12 @@
+{
+  "_comment": "Build with `packer build -var-file=versions/ubuntu-15.04-desktop.json ubuntu.json`",
+  "vm_name": "ubuntu-15.04-desktop",
+  "cpus": "1",
+  "disk_size": "16384",
+  "iso_checksum": "3fda7146a4d3b27cb05a4ee6eed8eda6a0154c4a",
+  "iso_checksum_type": "sha1",
+  "iso_name": "ubuntu-15.04-desktop-amd64.iso",
+  "iso_url": "http://releases.ubuntu.com/15.04/ubuntu-15.04-desktop-amd64.iso",
+  "memory": "1024",
+  "preseed" : "ubuntu.cfg"
+}

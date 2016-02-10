@@ -1,19 +1,24 @@
 {
   "variables": {
-    "version": ""
+    "version": "",
+    "checksum": "88c0437f0a14c6e2c94426df9d43cd67",
+    "checksum_type": "md5",
+    "memory": "512",
+    "cpus": "2"
   },
   "builders" : [
     {
+      "name": "centos-7-virtualbox",
       "vm_name": "centos-7-{{timestamp}}",
       "type": "virtualbox-iso",
       "boot_wait": "10s",
       "disk_size": 8000,
       "guest_os_type": "RedHat_64",
-      "headless": true,
+      "headless": false,
       "http_directory": "http",
       "iso_url": "http://centos.mirrors.hoobly.com/7/isos/x86_64/CentOS-7-x86_64-Minimal-1511.iso",
-      "iso_checksum_type": "md5",
-      "iso_checksum": "88c0437f0a14c6e2c94426df9d43cd67",
+      "iso_checksum_type": "{{ user `checksum_type` }}",
+      "iso_checksum": "{{user `checksum`}}",
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_port": 22,
@@ -25,21 +30,22 @@
         "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos7.cfg<enter><wait>"
       ],
       "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--memory", "512"],
-        ["modifyvm", "{{.Name}}", "--cpus", "2"]
+        ["modifyvm", "{{.Name}}", "--memory", "{{ user `memory` }}"],
+        ["modifyvm", "{{.Name}}", "--cpus", "{{ user `cpus` }}"]
       ]
     },
     {
+      "name": "centos-7-vmware",
       "vm_name": "centos-7-{{timestamp}}",
       "type": "vmware-iso",
       "boot_wait": "10s",
       "disk_size": 8000,
       "guest_os_type": "centos-64",
-      "headless": true,
+      "headless": false,
       "http_directory": "http",
       "iso_url": "http://centos.mirrors.hoobly.com/7/isos/x86_64/CentOS-7-x86_64-Minimal-1511.iso",
-      "iso_checksum_type": "md5",
-      "iso_checksum": "88c0437f0a14c6e2c94426df9d43cd67",
+      "iso_checksum_type": "{{ user `checksum_type` }}",
+      "iso_checksum": "{{user `checksum`}}",
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_port": 22,
@@ -51,8 +57,8 @@
       ],
       "vmx_data": {
         "cpuid.coresPerSocket": "1",
-        "memsize": "512",
-        "numvcpus": "2"
+        "memsize": "{{ user `memory` }}",
+        "numvcpus": "{{ user `cpus` }}"
       }
     }
   ],
@@ -77,7 +83,7 @@
   "post-processors": [
     {
       "type": "vagrant",
-      "output": "builds/{{.BuildName}}-{{.Provider}}-{{user `version`}.box",
+      "output": "builds/{{.BuildName}}-{{user `version`}}.box",
       "compression_level": 9
     }
   ]

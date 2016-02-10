@@ -1,11 +1,7 @@
 {
-  "variables": {
-    "version": ""
-  },
   "builders" : [
     {
-      "name": "ubuntu-15.04-virtualbox",
-      "vm_name": "ubuntu-15.04-virtualbox-{{timestamp}}",
+      "vm_name": "{{user `iso_name`}}-{{timestamp}}",
       "type": "virtualbox-iso",
       "boot_command": [
         "<esc><wait>",
@@ -15,21 +11,21 @@
         " auto=true",
         " priority=critical",
         " initrd=/install/initrd.gz",
-        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu15.cfg",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `preseed`}}",
         " -- ",
         "<enter>"
       ],
       "boot_wait": "10s",
-      "disk_size": 8000,
-      "guest_os_type": "Ubuntu_64",
+      "disk_size": "{{user `disk_size`}}",
+      "guest_os_type": "{{user `virtualbox_guest_os_type`}}",
       "headless": false,
       "http_directory": "http",
       "iso_urls": [
-        "isos/ubuntu-15.04-server-amd64.iso",
-        "http://releases.ubuntu.com/15.04/ubuntu-15.04-server-amd64.iso"
+        "isos/{{user `iso_name`}}",
+        "{{user `iso_url`}}"
       ],
-      "iso_checksum_type": "md5",
-      "iso_checksum": "487f4a81f22f8597503db3d51a1b502e",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
       "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
       "ssh_password": "vagrant",
       "ssh_username": "vagrant",
@@ -38,13 +34,12 @@
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "virtualbox_version_file": ".vbox_version",
       "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--memory", "512"],
-        ["modifyvm", "{{.Name}}", "--cpus", "2"]
+        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
       ]
     },
     {
-      "name": "ubuntu-15.04-vmware",
-      "vm_name": "ubuntu-15.04-vmware-{{timestamp}}",
+      "vm_name": "{{user `iso_name`}}-{{timestamp}}",
       "type": "vmware-iso",
       "boot_command": [
         "<esc><wait>",
@@ -54,21 +49,21 @@
         " auto=true",
         " priority=critical",
         " initrd=/install/initrd.gz",
-        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu15.cfg",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `preseed`}}",
         " -- ",
         "<enter>"
       ],
       "boot_wait": "10s",
-      "disk_size": 8000,
-      "guest_os_type": "ubuntu-64",
+      "disk_size": "{{user `disk_size`}}",
+      "guest_os_type": "{{user `vmware_guest_os_type`}}",
       "headless": false,
       "http_directory": "http",
       "iso_urls": [
-        "isos/ubuntu-15.04-server-amd64.iso",
-        "http://releases.ubuntu.com/15.04/ubuntu-15.04-server-amd64.iso"
+        "isos/{{user `iso_name`}}",
+        "{{user `iso_url`}}"
       ],
-      "iso_checksum_type": "md5",
-      "iso_checksum": "487f4a81f22f8597503db3d51a1b502e",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
       "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
       "ssh_password": "vagrant",
       "ssh_port": 22,
@@ -77,86 +72,8 @@
       "tools_upload_flavor": "linux",
       "vmx_data": {
         "cpuid.coresPerSocket": "1",
-        "memsize": "512",
-        "numvcpus": "2"
-      }
-    },
-    {
-      "name": "ubuntu-14.04-virtualbox",
-      "vm_name": "ubuntu-14.04.3-virtualbox-{{timestamp}}",
-      "type": "virtualbox-iso",
-      "boot_command": [
-        "<esc><wait>",
-        "<esc><wait>",
-        "<enter><wait>",
-        "/install/vmlinuz",
-        " auto=true",
-        " priority=critical",
-        " initrd=/install/initrd.gz",
-        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu15.cfg",
-        " -- ",
-        "<enter>"
-      ],
-      "boot_wait": "10s",
-      "disk_size": 8000,
-      "guest_os_type": "Ubuntu_64",
-      "headless": false,
-      "http_directory": "http",
-      "iso_urls": [
-        "isos/ubuntu-14.04.3-server-amd64.iso",
-        "http://releases.ubuntu.com/14.04/ubuntu-14.04.3-server-amd64.iso"
-      ],
-      "iso_checksum_type": "md5",
-      "iso_checksum": "9e5fecc94b3925bededed0fdca1bd417",
-      "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
-      "ssh_password": "vagrant",
-      "ssh_username": "vagrant",
-      "ssh_port": 22,
-      "ssh_wait_timeout": "60m",
-      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-      "virtualbox_version_file": ".vbox_version",
-      "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--memory", "512"],
-        ["modifyvm", "{{.Name}}", "--cpus", "2"]
-      ]
-    },
-    {
-      "name": "ubuntu-14.04-vmware",
-      "vm_name": "ubuntu-14.04.3-vmware-{{timestamp}}",
-      "type": "vmware-iso",
-      "boot_command": [
-        "<esc><wait>",
-        "<esc><wait>",
-        "<enter><wait>",
-        "/install/vmlinuz",
-        " auto=true",
-        " priority=critical",
-        " initrd=/install/initrd.gz",
-        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu15.cfg",
-        " -- ",
-        "<enter>"
-      ],
-      "boot_wait": "10s",
-      "disk_size": 8000,
-      "guest_os_type": "ubuntu-64",
-      "headless": false,
-      "http_directory": "http",
-      "iso_urls": [
-        "isos/ubuntu-14.04.3-server-amd64.iso",
-        "http://releases.ubuntu.com/14.04/ubuntu-14.04.3-server-amd64.iso"
-      ],
-      "iso_checksum_type": "md5",
-      "iso_checksum": "9e5fecc94b3925bededed0fdca1bd417",
-      "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
-      "ssh_password": "vagrant",
-      "ssh_port": 22,
-      "ssh_username": "vagrant",
-      "ssh_wait_timeout": "60m",
-      "tools_upload_flavor": "linux",
-      "vmx_data": {
-        "cpuid.coresPerSocket": "1",
-        "memsize": "512",
-        "numvcpus": "2"
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `cpus`}}"
       }
     }
   ],
@@ -164,7 +81,7 @@
     {
       "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-      "script": "http/ubuntu-setup.sh"
+      "script": "scripts/ubuntu/setup.sh"
     },
     {
       "type": "ansible-local",
@@ -175,14 +92,28 @@
     {
       "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-      "script": "http/ubuntu-cleanup.sh"
+      "script": "scripts/ubuntu/cleanup.sh"
     }
   ],
   "post-processors": [
     {
       "type": "vagrant",
-      "output": "builds/{{.BuildName}}-{{user `version`}}.box",
+      "output": "builds/{{user `vm_name`}}-{{.BuildName}}-{{user `version`}}.box",
       "compression_level": 9
     }
-  ]
+  ],
+  "variables": {
+    "cpus": "1",
+    "disk_size": "8192",
+    "iso_checksum": "0501c446929f713eb162ae2088d8dc8b6426224a",
+    "iso_checksum_type": "sha1",
+    "iso_name": "ubuntu-14.04.3-server-amd64.iso",
+    "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04.3-server-amd64.iso",
+    "memory": "512",
+    "preseed" : "ubuntu.cfg",
+    "version": "0.1.0",
+    "virtualbox_guest_os_type": "Ubuntu_64",
+    "vm_name": "ubuntu1404",
+    "vmware_guest_os_type": "ubuntu-64"
+  }
 }
