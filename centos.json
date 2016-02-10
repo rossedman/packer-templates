@@ -1,24 +1,19 @@
 {
-  "variables": {
-    "version": "",
-    "checksum": "88c0437f0a14c6e2c94426df9d43cd67",
-    "checksum_type": "md5",
-    "memory": "512",
-    "cpus": "2"
-  },
   "builders" : [
     {
-      "name": "centos-7-virtualbox",
-      "vm_name": "centos-7-{{timestamp}}",
+      "vm_name": "{{user `vm_name`}}",
       "type": "virtualbox-iso",
       "boot_wait": "10s",
-      "disk_size": 8000,
-      "guest_os_type": "RedHat_64",
+      "disk_size": "{{user `disk_size`}}",
+      "guest_os_type": "{{user `virtualbox_guest_os_type`}}",
       "headless": false,
       "http_directory": "http",
-      "iso_url": "http://centos.mirrors.hoobly.com/7/isos/x86_64/CentOS-7-x86_64-Minimal-1511.iso",
-      "iso_checksum_type": "{{ user `checksum_type` }}",
-      "iso_checksum": "{{user `checksum`}}",
+      "iso_urls": [
+        "isos/{{user `iso_name`}}",
+        "{{user `iso_url`}}"
+      ],
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_checksum": "{{user `iso_checksum`}}",
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_port": 22,
@@ -27,7 +22,7 @@
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "virtualbox_version_file": ".vbox_version",
       "boot_command": [
-        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos7.cfg<enter><wait>"
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `kickstart`}}<enter><wait>"
       ],
       "vboxmanage": [
         ["modifyvm", "{{.Name}}", "--memory", "{{ user `memory` }}"],
@@ -35,17 +30,19 @@
       ]
     },
     {
-      "name": "centos-7-vmware",
-      "vm_name": "centos-7-{{timestamp}}",
+      "vm_name": "{{user `vm_name`}}",
       "type": "vmware-iso",
       "boot_wait": "10s",
-      "disk_size": 8000,
-      "guest_os_type": "centos-64",
+      "disk_size": "{{user `disk_size`}}",
+      "guest_os_type": "{{user `vmware_guest_os_type`}}",
       "headless": false,
       "http_directory": "http",
-      "iso_url": "http://centos.mirrors.hoobly.com/7/isos/x86_64/CentOS-7-x86_64-Minimal-1511.iso",
-      "iso_checksum_type": "{{ user `checksum_type` }}",
-      "iso_checksum": "{{user `checksum`}}",
+      "iso_urls": [
+        "isos/{{user `iso_name`}}",
+        "{{user `iso_url`}}"
+      ],
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_checksum": "{{user `iso_checksum`}}",
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_port": 22,
@@ -53,7 +50,7 @@
       "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
       "tools_upload_flavor": "linux",
       "boot_command": [
-        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos7.cfg<enter><wait>"
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `kickstart`}}<enter><wait>"
       ],
       "vmx_data": {
         "cpuid.coresPerSocket": "1",
@@ -66,7 +63,7 @@
     {
       "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-      "script": "http/centos-setup.sh"
+      "script": "scripts/centos/setup.sh"
     },
     {
       "type": "ansible-local",
@@ -77,7 +74,7 @@
     {
       "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-      "script": "http/centos-cleanup.sh"
+      "script": "scripts/centos/cleanup.sh"
     }
   ],
   "post-processors": [
@@ -86,5 +83,19 @@
       "output": "builds/{{.BuildName}}-{{user `version`}}.box",
       "compression_level": 9
     }
-  ]
+  ],
+  "variables": {
+    "cpus": "1",
+    "disk_size": "8192",
+    "iso_checksum": "f90e4d28fa377669b2db16cbcb451fcb9a89d2460e3645993e30e137ac37d284",
+    "iso_checksum_type": "sha256",
+    "iso_name": "CentOS-7-x86_64-Minimal-1511.iso",
+    "iso_url": "http://centos.mirrors.hoobly.com/7/isos/x86_64/CentOS-7-x86_64-Minimal-1511.iso",
+    "memory": "512",
+    "kickstart" : "centos.cfg",
+    "version": "0.1.0",
+    "virtualbox_guest_os_type": "RedHat_64",
+    "vm_name": "centos-7.2",
+    "vmware_guest_os_type": "centos-64"
+  }
 }

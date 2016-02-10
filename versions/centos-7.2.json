@@ -1,0 +1,12 @@
+{
+  "_comment": "Build with `packer build -var-file=versions/centos-7.2.json centos.json`",
+  "vm_name": "centos-7.2",
+  "cpus": "1",
+  "disk_size": "8192",
+  "iso_checksum": "f90e4d28fa377669b2db16cbcb451fcb9a89d2460e3645993e30e137ac37d284",
+  "iso_checksum_type": "sha256",
+  "iso_name": "CentOS-7-x86_64-Minimal-1511.iso",
+  "iso_url": "http://centos.mirrors.hoobly.com/7/isos/x86_64/CentOS-7-x86_64-Minimal-1511.iso",
+  "memory": "512",
+  "kickstart" : "centos7.cfg"
+}

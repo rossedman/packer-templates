@@ -1,7 +1,4 @@
 {
-  "variables": {
-    "version": ""
-  },
   "builders": [
     {
       "vm_name": "esxi60",
@@ -10,7 +7,9 @@
       "headless": true,
       "disk_size": 4096,
       "guest_os_type": "vmkernel5",
-      "iso_url": "/Users/redata425/Documents/ISOs/VMware-VMvisor-Installer-201601001-3380124.x86_64.iso",
+      "iso_urls": [
+        "isos/VMware-VMvisor-Installer-201601001-3380124.x86_64.iso"
+      ]
       "iso_checksum": "10e8f6efe634a330c3099a93e1cb1ef1d18e17b5",
       "iso_checksum_type": "sha1",
       "ssh_username": "root",
@@ -32,7 +31,7 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "files/vagrant.pub",
+      "source": "scripts/vagrant.pub",
       "destination": "/etc/ssh/keys-root/authorized_keys"
     },
     {
@@ -50,5 +49,19 @@
       "output": "builds/{{.BuildName}}-{{.Provider}}-{{user `version`}}.box",
       "compression_level": 9
     }
-  ]
+  ],
+  "variables": {
+    "cpus": "2",
+    "disk_size": "8192",
+    "iso_checksum": "10e8f6efe634a330c3099a93e1cb1ef1d18e17b5",
+    "iso_checksum_type": "sha1",
+    "iso_name": "VMware-VMvisor-Installer-201601001-3380124.x86_64.iso",
+    "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04.3-server-amd64.iso",
+    "memory": "4096",
+    "preseed" : "esxi.cfg",
+    "version": "0.1.0",
+    "virtualbox_guest_os_type": "Linux",
+    "vm_name": "esxi-6.0",
+    "vmware_guest_os_type": "vmkernel5"
+  }
 }
