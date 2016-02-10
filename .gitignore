@@ -1,9 +1,10 @@
+isos/*
 builds/*
 packer_cache
-*.tfstate
-*.tfstate.backup
-!builds/.gitkeep
 .vagrant
 Vagrantfile
 output-virtualbox-iso
 output-vmware-iso
+!builds/.gitkeep
+!isos/.gitkeep
+!isos/README.md

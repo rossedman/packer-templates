@@ -6,9 +6,13 @@
     - geerlingguy.packer-debian
     - geerlingguy.nfs
   tasks:
-    - user: name=redman comment="Ross Edman" shell=/bin/zsh 
-    - user: name=redman groups=wheel append=yes
-    - user: name=vagrant shell=/bin/zsh
+    - name: install zsh requirements
+      apt: name={{item}} state=latest
+      with_items:
+        - curl
+        - wget
+        - git
+        - zsh
 
     - name: clone oh-my-zsh
       git: 
@@ -25,6 +29,10 @@
         - vagrant
         - redman
 
+    - user: name=redman comment="Ross Edman" shell=/bin/zsh 
+    - user: name=redman groups=sudo append=yes
+    - user: name=vagrant shell=/bin/zsh
+
     - name: setup ~/.ssh directory
       file:
         dest: /home/redman/.ssh/
@@ -39,6 +47,6 @@
       lineinfile:
         dest: /etc/sudoers
         state: present
-        regexp: ^%wheel ALL\=
-        line: "%wheel ALL=(ALL) NOPASSWD:ALL"
+        regexp: ^%sudo ALL\=
+        line: "%sudo ALL=(ALL) NOPASSWD:ALL"
         validate: visudo -cf %s

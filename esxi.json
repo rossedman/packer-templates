@@ -4,11 +4,10 @@
   },
   "builders": [
     {
-      "name": "esxi60-{{timestamp}}",
-      "vm_name": "esxi60-{{timestamp}}",
+      "vm_name": "esxi60",
       "vmdk_name": "esxi60-disk0",
       "type": "vmware-iso",
-      "headless": false,
+      "headless": true,
       "disk_size": 4096,
       "guest_os_type": "vmkernel5",
       "iso_url": "/Users/redata425/Documents/ISOs/VMware-VMvisor-Installer-201601001-3380124.x86_64.iso",

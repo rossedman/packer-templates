@@ -1,0 +1,12 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "redman/esxi"
+  config.ssh.username = 'root'
+  config.ssh.shell = 'sh'
+  config.ssh.insert_key = false
+  config.vm.hostname = 'esxi'
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.network "public_network"
+end
