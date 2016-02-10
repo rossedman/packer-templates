@@ -4,7 +4,7 @@
   },
   "builders" : [
     {
-      "vm_name": "centos7",
+      "vm_name": "centos-7-{{timestamp}}",
       "type": "virtualbox-iso",
       "boot_wait": "10s",
       "disk_size": 8000,
@@ -30,7 +30,7 @@
       ]
     },
     {
-      "vm_name": "centos7",
+      "vm_name": "centos-7-{{timestamp}}",
       "type": "vmware-iso",
       "boot_wait": "10s",
       "disk_size": 8000,
@@ -60,10 +60,7 @@
     {
       "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-      "inline": [
-        "rpm -ivh http://mirror.pnl.gov/epel/7/x86_64/e/epel-release-7-5.noarch.rpm",
-        "yum install -y python-setuptools python-simplejson ansible"
-      ]
+      "script": "http/centos-setup.sh"
     },
     {
       "type": "ansible-local",
@@ -74,11 +71,7 @@
     {
       "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-      "inline": [
-        "rm -rf /tmp/*",
-        "dd if=/dev/zero of=/EMPTY bs=1M",
-        "rm -f /EMPTY"
-      ]
+      "script": "http/centos-cleanup.sh"
     }
   ],
   "post-processors": [
