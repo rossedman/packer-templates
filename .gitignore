@@ -8,3 +8,8 @@ output-vmware-iso
 !builds/.gitkeep
 !isos/.gitkeep
 !isos/README.md
+
+# Don't store roles from requirements.txt
+ansible/roles/geerlingguy.packer-rhel
+ansible/roles/geerlingguy.packer-debian
+ansible/roles/geerlingguy.nfs
