@@ -4,7 +4,7 @@
       "vm_name": "esxi60",
       "vmdk_name": "esxi60-disk0",
       "type": "vmware-iso",
-      "headless": true,
+      "headless": false,
       "disk_size": 4096,
       "guest_os_type": "vmkernel5",
       "iso_urls": [
@@ -24,7 +24,7 @@
         "vhv.enable": "TRUE"
       },
       "boot_command": [
-        "<enter><wait>O<wait> ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/http/esxi6.cfg<enter>"
+        "<enter><wait>O<wait> ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/http/esxi.cfg<enter>"
       ]
     }
   ],
@@ -36,11 +36,10 @@
     },
     {
       "type": "shell",
-      "script": "http/esxi-nested-vm.sh"
-    },
-    {
-      "type": "shell",
-      "script": "http/esxi-cloning-config.sh"
+      "scripts": [
+        "scripts/esxi/nested-vm.sh",
+        "scripts/esxi/cloning-config.sh"
+      ]
     }
   ],
   "post-processors": [

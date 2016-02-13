@@ -3,8 +3,7 @@ builds/*
 packer_cache
 .vagrant
 Vagrantfile
-output-virtualbox-iso
-output-vmware-iso
+output-*
 !builds/.gitkeep
 !isos/.gitkeep
 !isos/README.md

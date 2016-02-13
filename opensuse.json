@@ -13,11 +13,11 @@
       "disk_size": 8000,
       "guest_os_type": "OpenSUSE_64",
       "iso_checksum_type": "sha256",
-      "iso_checksum": "7667262584cc4936673578b5242efdff86cc1434ce60a25324faad7a2a36dbd7",
+      "iso_checksum": "8576e84822cdbe566bf551e28a169fc028229831eba9f07a4c1f84302c5ddb09",
       "headless": false,
       "http_directory": "http",
       "iso_urls": [
-        "isos/openSUSE-Leap-42.1-NET-x86_64.iso",
+        "isos/openSUSE-Leap-42.1-DVD-x86_64.iso",
         "http://download.opensuse.org/distribution/leap/42.1/iso/openSUSE-Leap-42.1-DVD-x86_64.iso"
       ],
       "ssh_username": "vagrant",
@@ -42,15 +42,15 @@
   ],
   "provisioners" : [
     {
-      "type": "shell",
-      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-      "script": "http/opensuse-setup.sh"
+      "type": "file",
+      "source": "scripts/vagrant.pub",
+      "destination": "/etc/ssh/keys-root/authorized_keys"
     }
   ],
   "post-processors": [
     {
       "type": "vagrant",
-      "output": "builds/{{.BuildName}}-{{user `version`}}.box",
+      "output": "builds/{{user `vm_name`}}-{{.BuildName}}-{{user `version`}}.box",
       "compression_level": 9
     }
   ]

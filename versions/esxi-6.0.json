@@ -8,5 +8,5 @@
   "iso_name": "VMware-VMvisor-Installer-6.0.0.update01-3029758.x86_64.iso",
   "iso_url": "isos/VMware-VMvisor-Installer-6.0.0.update01-3029758.x86_64.iso",
   "memory": "4096",
-  "preseed" : "esxi6.cfg"
+  "preseed" : "esxi.cfg"
 }
