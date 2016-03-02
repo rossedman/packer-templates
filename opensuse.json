@@ -1,0 +1,57 @@
+{
+  "variables": {
+    "version": "",
+    "memory": "512",
+    "cpus": "2"
+  },
+  "builders" : [
+    {
+      "name": "opensuse-leap-virtualbox",
+      "vm_name": "opensuse-leap-{{timestamp}}",
+      "type": "virtualbox-iso",
+      "boot_wait": "10s",
+      "disk_size": 8000,
+      "guest_os_type": "OpenSUSE_64",
+      "iso_checksum_type": "sha256",
+      "iso_checksum": "8576e84822cdbe566bf551e28a169fc028229831eba9f07a4c1f84302c5ddb09",
+      "headless": false,
+      "http_directory": "http",
+      "iso_urls": [
+        "isos/openSUSE-Leap-42.1-DVD-x86_64.iso",
+        "http://download.opensuse.org/distribution/leap/42.1/iso/openSUSE-Leap-42.1-DVD-x86_64.iso"
+      ],
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "60m",
+      "shutdown_command": "echo 'vagrant' | sudo -S /sbin/halt -h -p",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "virtualbox_version_file": ".vbox_version",
+      "boot_command": [
+        "<esc><enter><wait>",
+        " linux netdevice=eth0 netsetup=dhcp lang=en_US hostname=build <wait>",
+        " install=http://download.opensuse.org/distribution/leap/42.1/repo/oss/ <wait>",
+        " autoyast=http://{{.HTTPIP}}:{{.HTTPPort}}/opensuse-leap.xml",
+        " textmode=1 insecure=1<wait><enter><wait>"
+      ],
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "{{ user `memory` }}"],
+        ["modifyvm", "{{.Name}}", "--cpus", "{{ user `cpus` }}"]
+      ]
+    }
+  ],
+  "provisioners" : [
+    {
+      "type": "file",
+      "source": "scripts/vagrant.pub",
+      "destination": "/etc/ssh/keys-root/authorized_keys"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "builds/{{user `vm_name`}}-{{.BuildName}}-{{user `version`}}.box",
+      "compression_level": 9
+    }
+  ]
+}

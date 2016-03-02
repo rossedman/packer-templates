@@ -1,0 +1,12 @@
+{
+  "_comment": "Build with `packer build -var-file=versions/esxi-5.5.json esxi.json`",
+  "vm_name": "esxi-6.0",
+  "cpus": "2",
+  "disk_size": "8192",
+  "iso_checksum": "10e8f6efe634a330c3099a93e1cb1ef1d18e17b5",
+  "iso_checksum_type": "sha1",
+  "iso_name": "VMware-VMvisor-Installer-6.0.0.update01-3029758.x86_64.iso",
+  "iso_url": "isos/VMware-VMvisor-Installer-6.0.0.update01-3029758.x86_64.iso",
+  "memory": "4096",
+  "preseed" : "esxi.cfg"
+}

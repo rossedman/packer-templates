@@ -1,9 +1,14 @@
+isos/*
 builds/*
 packer_cache
-*.tfstate
-*.tfstate.backup
-!builds/.gitkeep
 .vagrant
 Vagrantfile
-output-virtualbox-iso
-output-vmware-iso
+output-*
+!builds/.gitkeep
+!isos/.gitkeep
+!isos/README.md
+
+# Don't store roles from requirements.txt
+ansible/roles/geerlingguy.packer-rhel
+ansible/roles/geerlingguy.packer-debian
+ansible/roles/geerlingguy.nfs
